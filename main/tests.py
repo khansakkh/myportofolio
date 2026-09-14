@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from main.models import Experience
-
+from main.models import Education
 
 class MainTest(TestCase):
     def setUp(self):
@@ -56,3 +56,24 @@ class MainTest(TestCase):
         self.assertFalse(self.experience.is_ongoing)
         self.assertContains(response, "Selesai")
         self.assertNotContains(response, "Sedang berlangsung")
+
+class EducationTest(TestCase):
+    def test_education_url_is_exist_and_uses_correct_template(self):
+        response = Client().get(reverse('main:show_education'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'education_list.html')
+
+    def test_education_data_appears_on_page(self):
+        Education.objects.create(
+            institution_name="Universitas Indonesia",
+            degree="S1 Sistem Informasi",
+            start_year=2023
+        )
+        response = Client().get(reverse('main:show_education'))
+        html_response = response.content.decode('utf8')
+        self.assertIn("Universitas Indonesia", html_response)
+
+    def test_empty_state_message_appears(self):
+        response = Client().get(reverse('main:show_education'))
+        html_response = response.content.decode('utf8')
+        self.assertIn("Belum ada riwayat pendidikan", html_response)
