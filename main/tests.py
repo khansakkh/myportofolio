@@ -1,7 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.utils import timezone
-
 from main.models import Experience, Education
 
 class MainTest(TestCase):
