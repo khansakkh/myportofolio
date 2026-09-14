@@ -1,9 +1,8 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.urls import reverse
 from django.utils import timezone
 
-from main.models import Experience
-from main.models import Education
+from main.models import Experience, Education
 
 class MainTest(TestCase):
     def setUp(self):
