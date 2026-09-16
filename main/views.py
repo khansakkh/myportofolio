@@ -2,6 +2,9 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from main.forms import EducationForm
 from main.models import Experience, Education
+from django.core import serializers
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 
 def show_main(request):
     context = {
@@ -40,3 +43,22 @@ def create_education(request):
 
     context = {"name": "Khansa", "form": form}
     return render(request, "education_form.html", context)
+
+def get_education_json(request):
+    search_query = request.GET.get("search", "").strip()
+    education = Education.objects.all()
+
+    if search_query:
+        education = education.filter(institution_name__icontains=search_query)
+
+    education_json = serializers.serialize("json", education)
+    return HttpResponse(education_json, content_type="application/json")
+
+
+def delete_education(request, education_id):
+    education = get_object_or_404(Education, pk=education_id)
+    if request.method == "POST":
+        education.delete()
+        messages.success(request, "Riwayat pendidikan berhasil dihapus!")
+        return redirect("main:show_education")
+    return redirect("main:show_education")
