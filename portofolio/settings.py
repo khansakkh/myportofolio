@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-cly=&u3-!7t^--@yo@d)zrp(4tpchm&g+4($(sw*55y$)!w&pp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1","khansa-khairunnisa51.pws.cs.ui.ac.id"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1","khansa-khairunnisa51-myportofolio.pws.cs.ui.ac.id"]
 PRODUCTION = os.getenv('PRODUCTION', 'False').lower() == 'true'
 
 # Application definition
@@ -149,4 +149,4 @@ MAILERS = {
     },
 }
 
-CSRF_TRUSTED_ORIGINS = ["https://url-pws-kamu.pbp.cs.ui.ac.id"]
+CSRF_TRUSTED_ORIGINS = ["https://khansa-khairunnisa51-myportofolio.pws.cs.ui.ac.id"]
