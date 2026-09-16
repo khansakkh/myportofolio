@@ -148,3 +148,5 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+CSRF_TRUSTED_ORIGINS = ["https://url-pws-kamu.pbp.cs.ui.ac.id"]
