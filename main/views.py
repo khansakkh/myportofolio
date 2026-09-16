@@ -1,7 +1,5 @@
 from django.contrib import messages
-from django.core import serializers
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import render, redirect
 from main.forms import EducationForm
 from main.models import Experience, Education
 
@@ -40,5 +38,5 @@ def create_education(request):
         messages.success(request, "Riwayat pendidikan berhasil ditambahkan!")
         return redirect("main:show_education")
 
-    context = {"Khansa": "Khansa", "form": form}
+    context = {"name": "Khansa", "form": form}
     return render(request, "education_form.html", context)
