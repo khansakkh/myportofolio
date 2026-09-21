@@ -29,6 +29,9 @@
                         <p class="experience-status">
                             {{ edu.start_year }} - {% if edu.end_year %}{{ edu.end_year }}{% else %}Sekarang{% endif %}
                         </p>
+                        <div class="project-actions">
+                             <a href="{% url 'main:update_education' edu.id %}" class="button">Edit</a>
+                        </div>
                         {% include "components/education_delete_modal.html" with edu=edu %}
                     </article>
                 {% empty %}
