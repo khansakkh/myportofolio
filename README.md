@@ -20,7 +20,7 @@ csrf_token ditambahkan untuk melindungi aplikasi dari CSRF, yaitu ketika pihak l
 JSON lebih sering digunakan dibandingkan XML karena memiliki struktur yang lebih ringkas dan tidak memerlukan closing tag pada setiap elemen, sehingga ukuran datanya lebih kecil. Selain itu, JSON memiliki format yang mudah digunakan dengan JavaScript sehingga proses *parsing* di sisi client lebih sederhana. Sementara itu, XML memiliki struktur yang lebih kompleks dan membutuhkan parsing yang lebih berat. Oleh karena itu, JSON lebih efisien untuk digunakan dalam komunikasi API pada aplikasi web modern.
 
 3
-Ketika vie* mengembalikan data dalam bentuk JSON, prosesnya dimulai dengan melakukan query terhadap data model melalui ORM, misalnya Education.objects.all(). Query tersebut menghasilkan queryset yang berisi objek-objek Python berupa instance dari model Django.
+Ketika view mengembalikan data dalam bentuk JSON, prosesnya dimulai dengan melakukan query terhadap data model melalui ORM, misalnya Education.objects.all(). Query tersebut menghasilkan queryset yang berisi objek-objek Python berupa instance dari model Django.
 
 Objek belum dapat langsung dikirim sebagai HTTP response karena masih berupa objek Python, bukan data dalam format yang dapat dibaca oleh client. Oleh karena itu, diperlukan serialization untuk mengubah objek model menjadi data dalam format terstruktur JSON, sehingga dapat dipahami client atau sistem lain di luar Django.
 
