@@ -25,3 +25,13 @@ Ketika vie* mengembalikan data dalam bentuk JSON, prosesnya dimulai dengan melak
 Objek belum dapat langsung dikirim sebagai HTTP response karena masih berupa objek Python, bukan data dalam format yang dapat dibaca oleh client. Oleh karena itu, diperlukan serialization untuk mengubah objek model menjadi data dalam format terstruktur JSON, sehingga dapat dipahami client atau sistem lain di luar Django.
 
 Setelah serialization selesai, data kemudian dibungkus dalam HttpResponse dengan content_type application/json. Dengan demikian, browser atau aplikasi client dapat mengetahui bahwa data yang diterima merupakan response dalam format JSON.
+
+
+AI DISCLOSURE
+Saya menggunakan Claude (Anthropic) sebagai asisten selama mengerjakan Tutorial 03 serta Individual Assignment 2 dan 3. Penggunaannya meliputi:
+
+Panduan implementasi skeleton template (base.html), form Create/Update/Delete, dan JSON data delivery untuk model Education.
+Bantuan debugging untuk error seperti ImportError, DisallowedHost, serta konfigurasi ALLOWED_HOSTS dan CSRF_TRUSTED_ORIGINS saat deployment ke PWS.
+Bantuan mengoreksi jawaban pertanyaan reflektif.
+
+Kode inti (models, views, forms, dan urls) saya tulis dan modifikasi sendiri berdasarkan pemahaman dari penjelasan yang diberikan. Saya juga melakukan verifikasi manual dengan menjalankan python manage.py runserver dan menguji setiap fitur sebelum melakukan submit.
