@@ -1,13 +1,25 @@
 {% extends 'base.html' %}
+
 {% block meta %}
 <title>Education - {{ name }}</title>
 {% endblock meta %}
+
 {% block content %}
 <main>
     <section class="experience-section" id="education">
         <div class="container">
             <p class="section-kicker">Riwayat pendidikan saya</p>
-            <h1>Education</h1>
+
+            <div class="project-header">
+                <h1>Education</h1>
+
+                {% if user.is_superuser %}
+                    <a href="{% url 'main:create_education' %}" class="button project-add-button">
+                        <span aria-hidden="true">+</span>
+                        Tambah Education
+                    </a>
+                {% endif %}
+            </div>
 
             <form method="get" action="{% url 'main:show_education' %}" class="project-search">
                 <input type="search"
@@ -16,6 +28,7 @@
                     placeholder="Cari berdasarkan nama institusi"
                     class="project-search__input"
                     aria-label="Cari berdasarkan nama institusi">
+
                 <button type="submit" class="button">Cari</button>
             </form>
 
@@ -23,22 +36,44 @@
                 {% for edu in education_list %}
                     <article class="experience-card">
                         <h2>{{ edu.degree }}</h2>
+
                         <p class="experience-description">
                             {{ edu.institution_name }}
                         </p>
+
                         <p class="experience-status">
-                            {{ edu.start_year }} - {% if edu.end_year %}{{ edu.end_year }}{% else %}Sekarang{% endif %}
+                            {{ edu.start_year }} -
+                            {% if edu.end_year %}
+                                {{ edu.end_year }}
+                            {% else %}
+                                Sekarang
+                            {% endif %}
                         </p>
+
                         <div class="project-actions">
-                            <a href="{% url 'main:update_education' edu.id %}" class="button">Edit</a>
+                            {% include "components/education_star.html" with edu=edu %}
+
+                            {% if user.is_superuser or is_editor %}
+                                <a href="{% url 'main:update_education' edu.id %}" class="button">
+                                    Edit
+                                </a>
+                            {% endif %}
+
+                            {% if user.is_superuser %}
+                                {% include "components/education_delete_modal.html" with edu=edu %}
+                            {% endif %}
                         </div>
-                        {% include "components/education_delete_modal.html" with edu=edu %}
                     </article>
+
                 {% empty %}
                     {% if search_query %}
-                        <p class="empty-state">Tidak ada riwayat dengan institusi tersebut.</p>
+                        <p class="empty-state">
+                            Tidak ada riwayat dengan institusi tersebut.
+                        </p>
                     {% else %}
-                        <p class="empty-state">Belum ada riwayat pendidikan yang ditambahkan.</p>
+                        <p class="empty-state">
+                            Belum ada riwayat pendidikan yang ditambahkan.
+                        </p>
                     {% endif %}
                 {% endfor %}
             </div>
