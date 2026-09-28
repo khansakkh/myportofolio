@@ -16,6 +16,7 @@ from main.views import (
     login_user,
     logout_user,
     toggle_star,
+    toggle_education_star,
 )
 
 app_name = "main"
@@ -56,4 +57,9 @@ urlpatterns = [
     toggle_star,
     name="toggle_star",
 ),
+    path(
+        "education/<int:education_id>/star/",
+        toggle_education_star,
+        name="toggle_education_star",
+    ),
 ]
