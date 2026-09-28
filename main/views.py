@@ -10,6 +10,11 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 def show_main(request):
+    last_login = request.COOKIES.get(
+        'last_login',
+        'Belum ada sesi login / Cookie tidak ditemukan'
+    )
+
     context = {
         "name": "Khansa",
         "npm": "2506536465",
@@ -18,7 +23,9 @@ def show_main(request):
             "Undergraduate student of information systems that has interest in "
             "technology, business, and risk management."
         ),
+        "last_login": last_login,
     }
+
     return render(request, "index.html", context)
 
 
