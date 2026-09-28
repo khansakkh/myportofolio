@@ -19,13 +19,6 @@
                 <button type="submit" class="button">Cari</button>
             </form>
 
-            {% if user.is_superuser %}
-                <a href="{% url 'main:create_education' %}" class="button project-add-button">
-                    <span aria-hidden="true">+</span>
-                    Tambah Education
-                </a>
-            {% endif %}
-
             <div class="experience-grid">
                 {% for edu in education_list %}
                     <article class="experience-card">
@@ -39,10 +32,7 @@
                         <div class="project-actions">
                             <a href="{% url 'main:update_education' edu.id %}" class="button">Edit</a>
                         </div>
-
-                        {% if user.is_superuser %}
-                            {% include "components/education_delete_modal.html" with edu=edu %}
-                        {% endif %}
+                        {% include "components/education_delete_modal.html" with edu=edu %}
                     </article>
                 {% empty %}
                     {% if search_query %}
