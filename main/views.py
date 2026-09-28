@@ -47,6 +47,8 @@ def show_education(request):
 
 @login_required(login_url="/login/")
 def create_education(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     form = EducationForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         form.save()
@@ -66,8 +68,10 @@ def get_education_json(request):
     education_json = serializers.serialize("json", education)
     return HttpResponse(education_json, content_type="application/json")
 
-
+@login_required(login_url="/login/")
 def delete_education(request, education_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     education = get_object_or_404(Education, pk=education_id)
     if request.method == "POST":
         education.delete()
