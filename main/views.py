@@ -109,10 +109,25 @@ def delete_project(request, project_id):
 
 
 def show_education(request):
+    search_query = request.GET.get("search", "").strip()
+
     education_list = Education.objects.all()
 
+    if search_query:
+        education_list = education_list.filter(
+            institution_name__icontains=search_query
+        )
+
+    is_editor = (
+        request.user.is_authenticated
+        and request.user.groups.filter(name="Editor").exists()
+    )
+
     context = {
-        'education_list': education_list,
+        "name": "Khansa",
+        "education_list": education_list,
+        "search_query": search_query,
+        "is_editor": is_editor,
     }
 
     return render(request, "education_list.html", context)
