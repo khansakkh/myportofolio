@@ -99,7 +99,7 @@ def login_user(request):
         return redirect("main:show_main")
 
     context = {
-        "name": "Burhan",
+        "name": "Khansa",
         "form": form,
     }
 
