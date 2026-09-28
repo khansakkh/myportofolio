@@ -35,3 +35,18 @@ Bantuan debugging untuk error seperti ImportError, DisallowedHost, serta konfigu
 Bantuan mengoreksi jawaban pertanyaan reflektif.
 
 Kode inti (models, views, forms, dan urls) saya tulis dan modifikasi sendiri berdasarkan pemahaman dari penjelasan yang diberikan. Saya juga melakukan verifikasi manual dengan menjalankan python manage.py runserver dan menguji setiap fitur sebelum melakukan submit.
+
+Tugas 4
+AI Disclosure
+Saya menggunakan ChatGPT sebagai alat bantu dalam pengerjaan tugas 4.
+AI digunakan untuk:
+- merapikan indentasi kode
+- mencari letak kesalahan kode
+- mengidentifikasi kode yang mungkin tidak sinkron, berbeda dengan maksud tugas
+- mengerti maksud tugas
+- menjelaskan makna tiap kode
+- membantu menjelaskan alur dan menyelesaikan eror apabila salah
+
+kode yang saya konsultasikan adalah kode yang saya tulis dan melanjutkan tutor yang kemudian di prompt untuk diperiksa dan disesuaikan
+
+saya tetap menguji, mengimplementasi, menjalankan, dan mengecek serta konfigurasi django admin sendiri.
