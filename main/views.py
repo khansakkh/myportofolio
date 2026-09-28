@@ -1,3 +1,4 @@
+import datetime
 from django.contrib import messages
 from django.contrib.auth import login,logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
@@ -95,8 +96,15 @@ def login_user(request):
     form = AuthenticationForm(request, data=request.POST or None)
 
     if request.method == "POST" and form.is_valid():
-        login(request, form.get_user())
-        return redirect("main:show_main")
+        user = form.get_user()
+        login(request, user)
+
+        response = redirect("main:show_main")
+        response.set_cookie(
+            "last_login",
+            datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        )
+        return response
 
     context = {
         "name": "Khansa",
