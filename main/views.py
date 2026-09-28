@@ -38,6 +38,7 @@ def show_experience(request):
         "name": "Khansa",
         "experience_list": Experience.objects.all(),
     }
+
     return render(request, "experience.html", context)
 
 
@@ -48,8 +49,16 @@ def get_projects_json(request):
     if title_query:
         projects = projects.filter(title__icontains=title_query)
 
-    projects_json = serializers.serialize("json", projects, use_natural_foreign_keys=True)
-    return HttpResponse(projects_json, content_type="application/json")
+    projects_json = serializers.serialize(
+        "json",
+        projects,
+        use_natural_foreign_keys=True
+    )
+
+    return HttpResponse(
+        projects_json,
+        content_type="application/json"
+    )
 
 
 def show_projects(request):
@@ -133,7 +142,11 @@ def show_education(request):
     return render(request, "education_list.html", context)
 
 
+@login_required(login_url="/login/")
 def create_education(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
     form = EducationForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
@@ -154,13 +167,27 @@ def get_education_json(request):
     education = Education.objects.all()
 
     if search_query:
-        education = education.filter(institution_name__icontains=search_query)
+        education = education.filter(
+            institution_name__icontains=search_query
+        )
 
-    education_json = serializers.serialize("json", education)
-    return HttpResponse(education_json, content_type="application/json")
+    education_json = serializers.serialize(
+        "json",
+        education,
+        use_natural_foreign_keys=True
+    )
+
+    return HttpResponse(
+        education_json,
+        content_type="application/json"
+    )
 
 
+@login_required(login_url="/login/")
 def delete_education(request, education_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
     education = get_object_or_404(Education, pk=education_id)
 
     if request.method == "POST":
@@ -171,7 +198,13 @@ def delete_education(request, education_id):
     return redirect("main:show_education")
 
 
+@login_required(login_url="/login/")
 def update_education(request, education_id):
+    is_editor = request.user.groups.filter(name="Editor").exists()
+
+    if not request.user.is_superuser and not is_editor:
+        raise PermissionDenied
+
     education = get_object_or_404(Education, pk=education_id)
 
     form = EducationForm(
@@ -242,6 +275,7 @@ def logout_user(request):
 
     return response
 
+
 @login_required(login_url="/login/")
 def toggle_star(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
@@ -253,3 +287,16 @@ def toggle_star(request, project_id):
             project.starred_by.add(request.user)
 
     return redirect("main:show_projects")
+
+
+@login_required(login_url="/login/")
+def toggle_education_star(request, education_id):
+    education = get_object_or_404(Education, pk=education_id)
+
+    if request.method == "POST":
+        if request.user in education.starred_by.all():
+            education.starred_by.remove(request.user)
+        else:
+            education.starred_by.add(request.user)
+
+    return redirect("main:show_education")
