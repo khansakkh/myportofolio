@@ -19,6 +19,13 @@
                 <button type="submit" class="button">Cari</button>
             </form>
 
+            {% if user.is_superuser %}
+                <a href="{% url 'main:create_education' %}" class="button project-add-button">
+                    <span aria-hidden="true">+</span>
+                    Tambah Education
+                </a>
+            {% endif %}
+
             <div class="experience-grid">
                 {% for edu in education_list %}
                     <article class="experience-card">
@@ -30,9 +37,12 @@
                             {{ edu.start_year }} - {% if edu.end_year %}{{ edu.end_year }}{% else %}Sekarang{% endif %}
                         </p>
                         <div class="project-actions">
-                             <a href="{% url 'main:update_education' edu.id %}" class="button">Edit</a>
+                            <a href="{% url 'main:update_education' edu.id %}" class="button">Edit</a>
                         </div>
-                        {% include "components/education_delete_modal.html" with edu=edu %}
+
+                        {% if user.is_superuser %}
+                            {% include "components/education_delete_modal.html" with edu=edu %}
+                        {% endif %}
                     </article>
                 {% empty %}
                     {% if search_query %}
