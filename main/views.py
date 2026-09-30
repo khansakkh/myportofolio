@@ -82,9 +82,11 @@ def get_projects_json(request):
 
 def show_projects(request):
     title_query = request.GET.get("title", "").strip()
+
     context = {
         "name": "Khansa",
         "title_query": title_query,
+        "form": ProjectForm(),
     }
 
     return render(request, "project.html", context)
