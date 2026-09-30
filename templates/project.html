@@ -89,7 +89,14 @@
             emptyState.classList.toggle('hide', !showEmpty);
             gridContainer.classList.toggle('hide', !showGrid);
         }
-
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#39;');
+        }
         function buildProjectCardElement(item) {
             const project = item.fields;
             const projectId = item.pk;
@@ -98,13 +105,13 @@
             articleElement.className = 'experience-card';
 
             const imageHtml = project.project_image_url
-                ? `<img src="${project.project_image_url}"
-                        alt="Gambar ${project.title}"
+                ? `<img src="${escapeHtml(project.project_image_url)}"
+                        alt="Gambar ${escapeHtml(project.title)}"
                         class="project-image">`
                 : '';
 
             const urlHtml = project.project_url
-                ? `<a href="${project.project_url}" class="button">Lihat Project</a>`
+                ? `<a href="${escapeHtml(project.project_url)}" class="button">Lihat Project</a>`
                 : '';
 
             const deleteUrl = "{% url 'main:delete_project' '00000000-0000-0000-0000-000000000000' %}"
@@ -137,20 +144,20 @@
             const starText = project.is_starred ? "Unstar" : "Star";
 
             const starTitle = project.star_count > 0
-                ? `Dibintangi oleh ${project.starred_by_names}`
+                ? `Dibintangi oleh ${escapeHtml(project.starred_by_names)}`
                 : "Jadilah yang pertama memberi star";
 
             const completeCardHtml = `
                 ${imageHtml}
 
-                <h2>${project.title}</h2>
+                <h2>${escapeHtml(project.title)}</h2>
 
                 <span class="experience-category">
-                    ${project.tech_stack}
+                    ${escapeHtml(project.tech_stack)}
                 </span>
 
                 <p class="experience-description">
-                    ${project.description}
+                    ${escapeHtml(project.description)}
                 </p>
 
                 <div class="project-card-actions">
