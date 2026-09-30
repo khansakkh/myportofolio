@@ -59,6 +59,10 @@
             </div>
         </section>
     </main>
+
+    {% if user.is_superuser %}
+        {% include "components/project_form_modal.html" %}
+    {% endif %}
     <script>
         const BASE_PROJECTS_ENDPOINT = "{% url 'main:get_projects_json' %}";
         const IS_SUPERUSER = "{{ user.is_superuser|yesno:'true,false' }}" === "true";
@@ -246,6 +250,9 @@
             searchProjects();
         });
 
+        function closeProjectModal() {
+             document.getElementById("add-project-modal").hidePopover();
+        }
         fetchProjects(searchInput.value.trim());
     </script>
 {% endblock content %}
