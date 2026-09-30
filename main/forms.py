@@ -42,7 +42,7 @@ class ProjectForm(ModelForm):
             ),
             "project_url": URLInput(
                 attrs={
-                    "placeholder": "https://github.com/username/project",
+                    "placeholder": "https://github.com/khansakkh/project",
                 }
             ),
             "project_image_url": URLInput(
