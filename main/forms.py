@@ -1,5 +1,8 @@
-from django.forms import ModelForm, TextInput, Textarea, URLInput, NumberInput
-from main.models import Project, Education
+from django.core.exceptions import ValidationError
+from django.forms import ModelForm, NumberInput, Textarea, TextInput, URLInput
+from django.utils.html import strip_tags
+
+from main.models import Education, Project
 
 
 class ProjectForm(ModelForm):
@@ -39,7 +42,7 @@ class ProjectForm(ModelForm):
             ),
             "project_url": URLInput(
                 attrs={
-                    "placeholder": "https://github.com/kakBurhan/burhanquestv4",
+                    "placeholder": "https://github.com/username/project",
                 }
             ),
             "project_image_url": URLInput(
@@ -48,6 +51,26 @@ class ProjectForm(ModelForm):
                 }
             ),
         }
+
+    def clean_title(self):
+        title = strip_tags(self.cleaned_data["title"]).strip()
+
+        if not title:
+            raise ValidationError(
+                "Nama proyek tidak boleh hanya berisi tag HTML."
+            )
+
+        return title
+
+    def clean_tech_stack(self):
+        return strip_tags(
+            self.cleaned_data["tech_stack"]
+        ).strip()
+
+    def clean_description(self):
+        return strip_tags(
+            self.cleaned_data["description"]
+        ).strip()
 
 
 class EducationForm(ModelForm):
@@ -61,8 +84,18 @@ class EducationForm(ModelForm):
             "end_year": "Tahun Selesai",
         }
         widgets = {
-            "institution_name": TextInput(attrs={"placeholder": "Universitas Indonesia"}),
-            "degree": TextInput(attrs={"placeholder": "S1 Sistem Informasi"}),
-            "start_year": NumberInput(attrs={"placeholder": "2023"}),
-            "end_year": NumberInput(attrs={"placeholder": "2027 (kosongkan jika masih berlangsung)"}),
+            "institution_name": TextInput(
+                attrs={"placeholder": "Universitas Indonesia"}
+            ),
+            "degree": TextInput(
+                attrs={"placeholder": "S1 Sistem Informasi"}
+            ),
+            "start_year": NumberInput(
+                attrs={"placeholder": "2023"}
+            ),
+            "end_year": NumberInput(
+                attrs={
+                    "placeholder": "2027 (kosongkan jika masih berlangsung)"
+                }
+            ),
         }
