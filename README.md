@@ -50,3 +50,29 @@ AI digunakan untuk:
 kode yang saya konsultasikan adalah kode yang saya tulis dan melanjutkan tutor yang kemudian di prompt untuk diperiksa dan disesuaikan
 
 saya tetap menguji, mengimplementasi, menjalankan, dan mengecek serta konfigurasi django admin sendiri.
+
+### Tugas 5
+
+1. Debouncing adalah menunda eksekusi pencarian sampai pengguna berhenti mengetik selama jeda tertentu. Pada pencarian AJAX, ini mencegah satu request dikirim untuk setiap huruf, sehingga server tidak menerima permintaan berlebihan dan hasil pencarian tidak mudah tertimpa oleh respons dari query sebelumnya. Di halaman Education, pencarian memakai jeda 300 ms dan request sebelumnya dibatalkan dengan AbortController.
+2. await menunggu Promise dari fetch() selesai sehingga kode berikutnya mendapat objek Response, bukan Promise yang masih berjalan. await juga dipakai saat membaca response.json(), karena parsing JSON bersifat asynchronous. Tanpa await, kode yang langsung mengakses status atau memanggil json() pada hasil fetch() akan bekerja pada Promise dan dapat gagal; alternatifnya adalah memakai .then() dengan alur yang setara.
+3. XSS adalah serangan ketika input yang tidak tepercaya dijalankan sebagai JavaScript di browser pengguna. Data AJAX lebih rentan jika string dari JSON dimasukkan ke innerHTML, sebab JavaScript tidak otomatis melakukan escaping. Template Django secara default meng-escape nilai variabel yang dirender. Di Education, input teks dibersihkan dengan strip_tags di ModelForm dan nilai dari JSON ditampilkan lewat textContent, sehingga tag seperti <img onerror="..."> tidak dijalankan.
+
+#### AI Disclosure
+
+Saya menggunakan ChatGPT (OpenAI) sebagai alat bantu dalam pengerjaan Tugas 5.
+AI digunakan untuk:
+
+- membaca checklist tugas dan memeriksa kode Tutorial 05 serta fitur Education dari Tugas 3 dan 4;
+- mengimplementasikan endpoint JSON, form AJAX, modal, pencarian debounce, toast, dan perlindungan XSS pada Education;
+- menulis serta menjalankan pengujian, mengecek halaman lokal, dan membantu menjawab pertanyaan reflektif.
+
+Strategi prompting saya adalah meminta AI mengikuti butir tugas satu per satu, mempertahankan hak akses yang sudah ada, menghindari fitur tambahan, serta membuat commit bertahap. Prompt lanjutan saya menekankan agar bagian disclosure ini mengikuti gaya README tugas sebelumnya. Perubahan yang dibantu AI meliputi main/views.py, main/forms.py, main/urls.py, templates/education_list.html, templates/components/education_form_modal.html, main/tests.py, dan bagian Tugas 5 pada README.md.
+
+Keterbatasan AI: pengujian lokal tidak otomatis membuktikan deployment PWS akan berjalan identik. Karena itu, hasil di server dan tautan commit yang dikumpulkan perlu diperiksa setelah push.
+
+#### Setup lokal
+
+1. Buat dan aktifkan virtual environment Python.
+2. Jalankan pip install -r requirements.txt.
+3. Jalankan python manage.py migrate.
+4. Jalankan python manage.py runserver, lalu buka /education/.
