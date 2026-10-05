@@ -4,9 +4,8 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from django.core import serializers
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
@@ -130,14 +129,6 @@ def delete_project(request, project_id):
 
 def show_education(request):
     search_query = request.GET.get("search", "").strip()
-
-    education_list = Education.objects.all()
-
-    if search_query:
-        education_list = education_list.filter(
-            institution_name__icontains=search_query
-        )
-
     is_editor = (
         request.user.is_authenticated
         and request.user.groups.filter(name="Editor").exists()
@@ -145,9 +136,9 @@ def show_education(request):
 
     context = {
         "name": "Khansa",
-        "education_list": education_list,
         "search_query": search_query,
         "is_editor": is_editor,
+        "form": EducationForm(),
     }
 
     return render(request, "education_list.html", context)
@@ -175,23 +166,35 @@ def create_education(request):
 
 def get_education_json(request):
     search_query = request.GET.get("search", "").strip()
-    education = Education.objects.all()
+    education = Education.objects.prefetch_related("starred_by").all()
 
     if search_query:
         education = education.filter(
             institution_name__icontains=search_query
         )
 
-    education_json = serializers.serialize(
-        "json",
-        education,
-        use_natural_foreign_keys=True
-    )
+    data = []
+    for item in education:
+        starred_users = list(item.starred_by.all())
+        data.append({
+            "pk": item.pk,
+            "fields": {
+                "institution_name": item.institution_name,
+                "degree": item.degree,
+                "start_year": item.start_year,
+                "end_year": item.end_year,
+                "star_count": len(starred_users),
+                "is_starred": (
+                    request.user in starred_users
+                    if request.user.is_authenticated else False
+                ),
+                "starred_by_names": ", ".join(
+                    user.username for user in starred_users
+                ),
+            },
+        })
 
-    return HttpResponse(
-        education_json,
-        content_type="application/json"
-    )
+    return JsonResponse(data, safe=False)
 
 
 @login_required(login_url="/login/")
@@ -338,3 +341,22 @@ def create_project_ajax(request):
         {"errors": form.errors.get_json_data()},
         status=400
     )
+
+
+@require_POST
+def create_education_ajax(request):
+    if not request.user.is_superuser:
+        return JsonResponse(
+            {"message": "Hanya pemilik portofolio yang dapat menambahkan education."},
+            status=403,
+        )
+
+    form = EducationForm(request.POST)
+    if form.is_valid():
+        education = form.save()
+        return JsonResponse(
+            {"message": "Riwayat pendidikan berhasil ditambahkan.", "pk": education.pk},
+            status=201,
+        )
+
+    return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
