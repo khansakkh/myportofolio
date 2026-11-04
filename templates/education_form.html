@@ -26,4 +26,53 @@
         </div>
     </section>
 </main>
+{% if form.instance.pk %}
+<script>
+    const educationUpdateForm = document.querySelector('.project-form');
+    const educationUpdateEndpoint = "{% url 'api:education-detail' form.instance.pk %}";
+    const educationListUrl = "{% url 'main:show_education' %}";
+    const educationUpdateCsrf = educationUpdateForm.querySelector(
+        'input[name="csrfmiddlewaretoken"]'
+    ).value;
+
+    educationUpdateForm.addEventListener('submit', async event => {
+        event.preventDefault();
+        const submitButton = educationUpdateForm.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        try {
+            const fields = new FormData(educationUpdateForm);
+            const endYear = fields.get('end_year');
+            const response = await fetch(educationUpdateEndpoint, {
+                method: 'PATCH',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': educationUpdateCsrf,
+                },
+                body: JSON.stringify({
+                    institution_name: fields.get('institution_name'),
+                    degree: fields.get('degree'),
+                    start_year: Number(fields.get('start_year')),
+                    end_year: endYear ? Number(endYear) : null,
+                }),
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                const errors = Object.entries(data).flatMap(([field, messages]) =>
+                    Array.isArray(messages)
+                        ? messages.map(message => field + ': ' + String(message))
+                        : []
+                );
+                throw new Error(errors.join(' ') || data.detail || 'Gagal memperbarui education.');
+            }
+            showToast('Berhasil', 'Riwayat pendidikan diperbarui.', 'success');
+            window.setTimeout(() => window.location.assign(educationListUrl), 500);
+        } catch (error) {
+            showToast('Gagal memperbarui education', error.message, 'error');
+        } finally {
+            submitButton.disabled = false;
+        }
+    });
+</script>
+{% endif %}
 {% endblock content %}
