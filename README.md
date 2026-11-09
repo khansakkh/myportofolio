@@ -76,3 +76,22 @@ Keterbatasan AI: pengujian lokal tidak otomatis membuktikan deployment PWS akan 
 2. Jalankan pip install -r requirements.txt.
 3. Jalankan python manage.py migrate.
 4. Jalankan python manage.py runserver, lalu buka /education/.
+
+### Tugas 6
+
+1. REST adalah gaya arsitektur yang memperlakukan data seperti Education sebagai resource dengan URL sendiri. Dalam HTTP, `GET` membaca resource, `POST` membuatnya pada endpoint daftar, dan `DELETE` menghapusnya pada endpoint detail. Setiap request membawa konteks yang dibutuhkan untuk diproses. JSON hanya menentukan format data. API yang mengembalikan JSON masih bisa mengabaikan arti method dan status HTTP. Gunakan `PUT /api/v1/education/1/` ketika mengirim representasi lengkap dari data yang bisa diedit. Gunakan `PATCH` ke URL yang sama dengan `{"end_year": 2026}` ketika hanya tahun selesai yang berubah.
+2. `EducationSerializer` menentukan field API, mengubah objek `Education` menjadi data yang bisa dirender sebagai JSON, serta memvalidasi dan membersihkan input sebelum disimpan. DRF menghasilkan error per field ketika input tidak valid. Field seperti `star_count` dan `is_starred` dihitung dari relasi star dan bersifat read-only. Dengan `JsonResponse`, pemetaan field, validasi, dan bentuk respons error harus diatur secara terpisah.
+3. Autentikasi menentukan identitas pengguna dari sesi login. Otorisasi menentukan apakah pengguna itu boleh melakukan suatu tindakan. Di Education, pengguna biasa bisa memberi star, Editor bisa mengubah data, dan superuser juga bisa membuat serta menghapus data. Tombol yang disembunyikan hanya mengatur tampilan. Pengguna masih bisa mengirim `POST`, `PATCH`, atau `DELETE` secara langsung, sehingga permission class harus memeriksa hak akses di server.
+4. Browser bisa menyertakan cookie sesi secara otomatis. Pada request yang mengubah data, `SessionAuthentication` memeriksa token CSRF untuk mencegah situs lain memakai sesi pengguna secara tidak sah. `fetch()` mengirim token lewat `X-CSRFToken`. `force_authenticate()` menyuntikkan identitas langsung sehingga alur autentikasi sesi dilewati. Tes memakai `APIClient(enforce_csrf_checks=True)` dan `.login()` untuk membuktikan bahwa request tanpa token ditolak dan aksi star dengan token yang diterbitkan halaman Education diterima.
+
+#### Setup dan verifikasi
+
+1. Aktifkan virtual environment, lalu jalankan `python -m pip install -r requirements.txt` dan `python manage.py migrate`.
+2. Jalankan `python manage.py test main` untuk menguji Education dan Projects.
+3. Jalankan `python manage.py runserver`, lalu buka `/education/`, `/projects/`, dan `/api/v1/education/`. Endpoint terakhir menampilkan Browsable API ketika dibuka dari browser.
+
+#### AI Disclosure
+
+ChatGPT (OpenAI) digunakan untuk mencocokkan perubahan DRF lokal dengan checklist Tugas 6, meninjau serializer, permission, API, dan integrasi `fetch()`, memperkuat pengujian Education di `main/tests_api.py`, serta menyusun jawaban reflektif dan petunjuk verifikasi ini.
+
+Prompt meminta ChatGPT mengikuti panduan tugas di perangkat lokal dan menggunakan commit bertahap. Dalam peninjauan, ChatGPT membandingkan aturan peran dengan tes yang sudah ada. Tes penolakan diperkuat dengan pemeriksaan jumlah dan isi data. Tes sesi login ditambahkan untuk memeriksa token pada akun biasa dan Editor. Tes Django memverifikasi respons server dan efeknya pada database. Interaksi JavaScript di browser dan deployment perlu diverifikasi terpisah.
