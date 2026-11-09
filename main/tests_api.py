@@ -235,6 +235,7 @@ class EducationAPITest(APITestCase):
             self.assertEqual(self.client.post(self.list_url, self.payload, format="json").status_code, 403)
             self.assertEqual(self.client.patch(self.detail_url, {"degree": "Changed"}, format="json").status_code, 403)
             self.assertEqual(self.client.delete(self.detail_url).status_code, 403)
+        self.assertEqual(Education.objects.count(), 1)
         self.education.refresh_from_db()
         self.assertEqual(self.education.degree, "S1 Sistem Informasi")
 
@@ -269,6 +270,9 @@ class EducationAPITest(APITestCase):
         self.assertEqual(self.education.degree, "S1 Sistem Informasi (Updated)")
         self.assertEqual(self.client.post(self.list_url, self.payload, format="json").status_code, 403)
         self.assertEqual(self.client.delete(self.detail_url).status_code, 403)
+        self.assertEqual(Education.objects.count(), 1)
+        self.education.refresh_from_db()
+        self.assertEqual(self.education.degree, "S1 Sistem Informasi (Updated)")
 
     def test_put_patch_and_delete_for_owner(self):
         self.client.force_authenticate(user=self.owner)
@@ -330,3 +334,21 @@ class EducationAPITest(APITestCase):
         )
         response = client.post(self.list_url, self.payload, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertIn("CSRF", response.data["detail"])
+        self.assertEqual(Education.objects.count(), 1)
+
+    def test_education_page_sets_csrf_cookie_for_star(self):
+        for user in (self.visitor, self.editor):
+            with self.subTest(user=user):
+                client = APIClient(enforce_csrf_checks=True)
+                self.assertTrue(client.login(username=user.username, password="test-password"))
+                self.assertEqual(client.get(reverse("main:show_education")).status_code, 200)
+                token = client.cookies["csrftoken"].value
+
+                response = client.post(self.star_url)
+                self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+                self.assertFalse(self.education.starred_by.filter(pk=user.pk).exists())
+
+                response = client.post(self.star_url, HTTP_X_CSRFTOKEN=token)
+                self.assertEqual(response.status_code, status.HTTP_200_OK)
+                self.assertTrue(self.education.starred_by.filter(pk=user.pk).exists())
