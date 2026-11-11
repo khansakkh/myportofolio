@@ -95,3 +95,5 @@ Keterbatasan AI: pengujian lokal tidak otomatis membuktikan deployment PWS akan 
 ChatGPT (OpenAI) digunakan untuk mencocokkan perubahan DRF lokal dengan checklist Tugas 6, meninjau serializer, permission, API, dan integrasi `fetch()`, memperkuat pengujian Education di `main/tests_api.py`, serta menyusun jawaban reflektif dan petunjuk verifikasi ini.
 
 Prompt meminta ChatGPT mengikuti panduan tugas di perangkat lokal dan menggunakan commit bertahap. Dalam peninjauan, ChatGPT membandingkan aturan peran dengan tes yang sudah ada. Tes penolakan diperkuat dengan pemeriksaan jumlah dan isi data. Tes sesi login ditambahkan untuk memeriksa token pada akun biasa dan Editor. Tes Django memverifikasi respons server dan efeknya pada database. Interaksi JavaScript di browser dan deployment perlu diverifikasi terpisah.
+
+kemudian chatGPT juga membantu dalam mengoreksi penulisan jawaban README, serta membantu memberikan saran perubahan pada struktur kalimat.
